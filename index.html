@@ -206,7 +206,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 <div id="welcomeScreen">
     <img src="https://ik.imagekit.io/k8plwfarx/logo.png" class="logo-welcome">
     <h1>SELAMAT DATANG DI WEBSITE KAS BLOK D PERUMAHAN GRIYA FAMILY 3</h1>
-    <p>Built and developed by Fajar Ilmanosa Viar . <b>V1.0.9</b> . Copyright © 2026 Blok D GF3 . All Rights Reserved.</p>
+    <p>Built and developed by Fajar Ilmanosa Viar . <b>V1.1.4</b> . Copyright © 2026 Blok D GF3 . All Rights Reserved.</p>
     <button id="enterBtn" onclick="masukWeb()">MASUK</button>
 </div>
 
@@ -248,7 +248,11 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 <div class="menu-container" id="mainMenuContainer">
     <button class="main-menu" onclick="toggleMenu()">☰ MENU</button>
     <div class="menu-items" id="menuItems">
-        <button id="adminBtn" class="off">⛔ ADMIN OFF 🔒</button>
+        <button id="btnKoneksi" onclick="koneksiAdmin()" style="background:#e74c3c; color:#fff; font-weight:bold; border-bottom: 2px solid #fff; margin-bottom: 5px;">
+            ⛔ ADMIN HP OFF 🔒
+        </button>
+
+        <button id="adminBtn" class="off">⛔ ADMIN LAPTOP OFF 🔒</button>
         <div id="adminTools">
             <button onclick="tambahBaris('WARGA')" style="background:#28a745; color:#fff;">👤 TAMBAH WARGA</button>
             <button onclick="tambahBaris('LAIN')" style="background:#17a2b8; color:#fff;">📥 TAMBAH PEMASUKAN</button>
@@ -302,7 +306,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 </div>
 
 <div style="text-align:center; margin-top:30px; margin-bottom:50px; padding:20px; border-top:1px solid var(--border); font-size:0.8rem; color:#888; text-transform:none;">
-    Built and developed by <b style="color:var(--accent);">Fajar Shanum D3/7</b> | V1.0.9 Supreme Security and Terms | Copyright &copy; 2026 Blok D GF3 . All Rights Reserved.
+    Built and developed by <b style="color:var(--accent);">Fajar Shanum D3/7</b> | V1.1.4 Supreme Security and Terms | Copyright &copy; 2026 Blok D GF3 . All Rights Reserved.
 </div>
 
 <div id="checklistModal">
@@ -1304,7 +1308,7 @@ document.getElementById('adminBtn').onclick = async function() {
  if(!isAdmin){
   let u=prompt('QS. Al-Insyirah: 5-6'), p=prompt('Sesungguhnya bersama kesulitan ada kemudahan');
   if(u && u.toUpperCase()==='\x41\x44\x4D\x49\x4E' && p && p.toUpperCase()==='\x53\x41\x4E\x55\x4D\x49\x4F\x4E'){
-   isAdmin=true; this.textContent='✅ ADMIN ON 🔓'; this.className='primary';
+   isAdmin=true; this.textContent='✅ ADMIN LAPTOP ON 🔓'; this.className='primary';
    document.getElementById('adminTools').style.display='flex';
    applyAdminLock(); recalc(); alert('✅ SELAMAT DATANG TUAN ADMIN KECE ✅');
 } else { 
@@ -1328,7 +1332,7 @@ document.getElementById('adminBtn').onclick = async function() {
     alert('❌ CIEE SALAH PASSWORD ❌'); 
  }
  } else {
-  isAdmin=false; this.textContent='⛔ ADMIN OFF 🔒'; this.className='off';
+  isAdmin=false; this.textContent='⛔ ADMIN LAPTOP OFF 🔒'; this.className='off';
   document.getElementById('adminTools').style.display='none';
   applyAdminLock();
  }
@@ -1471,6 +1475,54 @@ window.hapusPerangkat = (fPrintID) => {
 window.onbeforeunload = function() {
     return "ANDA YAKIN INGIN MENYEGARKAN HALAMAN? DATA YANG BELUM DISIMPAN MUNGKIN AKAN HILANG!";
 };
+// ==========================================
+// LOGIKA ADMIN HP ON/OFF (KONEKSI GOOGLE)
+// ==========================================
+
+// 1. Fungsi untuk memicu login Google Redirect
+function koneksiAdmin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    alert("JARVIS: MENGHUBUNGKAN KE SERVER GOOGLE, TUAN...");
+    firebase.auth().signInWithRedirect(provider);
+}
+
+// 2. Detektor otomatis untuk merubah status tombol
+firebase.auth().onAuthStateChanged((user) => {
+    const btnHP = document.getElementById('btnKoneksi');
+    if (user && user.email === "fajarilmanosaviar@gmail.com") {
+        if (btnHP) {
+            btnHP.innerHTML = "✅ ADMIN HP ON 🔓";
+            btnHP.style.backgroundColor = "#27ae60"; // Hijau saat aktif
+            btnHP.style.borderColor = "#1e8449";
+            btnHP.disabled = true; // Kunci agar tidak login berulang kali
+        }
+        console.log("Jarvis: Koneksi Admin Google Terdeteksi.");
+    } else {
+        if (btnHP) {
+            btnHP.innerHTML = "⛔ ADMIN HP OFF 🔒";
+            btnHP.style.backgroundColor = "#e74c3c"; // Merah saat mati
+            btnHP.style.borderColor = "#c0392b";
+            btnHP.disabled = false;
+        }
+    }
+});
+
+// 3. Menangani hasil setelah kembali dari Google (Redirect Result)
+firebase.auth().getRedirectResult().then((result) => {
+    if (result.user) {
+        if (result.user.email === "fajarilmanosaviar@gmail.com") {
+            alert("✅ VERIFIKASI BERHASIL! STATUS ADMIN HP SEKARANG: ON 🔓");
+        } else {
+            alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
+            firebase.auth().signOut();
+        }
+    }
+}).catch((error) => {
+    // Abaikan jika error hanya karena masalah jaringan saat loading awal
+    if (error.code !== "auth/network-request-failed") {
+        console.log("Jarvis: Menunggu perintah Tuan.");
+    }
+});
 </script>
 <div id="modalPerangkat" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
     <div style="background:#fff; width:100%; max-width:800px; border-radius:10px; padding:20px; color:#000; max-height:90vh; overflow-y:auto;">
