@@ -747,20 +747,17 @@ function resetHardware(hwID, namaWarga) {
 }
 function hapusRiwayatLog() {
     if (isAdmin && confirm("JARVIS : TUAN, ANDA YAKIN INGIN MENGHAPUS SEMUA LOG PELANGGARAN?")) {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider).then((result) => {
-            if (result.user.email === "fajarilmanosaviar@gmail.com") {
-                db.ref('log_pelanggaran_hardware').remove().then(() => {
-                    alert("✅ LOG BERHASIL DIHAPUS");
-                    openPengunjung();
-                });
-            } else {
-                alert("🛑 AKSES DITOLAK!");
-                firebase.auth().signOut();
-            }
-        }).catch((error) => {
-            alert("🛑 ERROR: " + error.message);
-        });
+        const currentUser = firebase.auth().currentUser;
+        
+        if (currentUser && currentUser.email === "fajarilmanosaviar@gmail.com") {
+            db.ref('log_pelanggaran_hardware').remove().then(() => {
+                alert("✅ LOG BERHASIL DIHAPUS");
+                openPengunjung();
+            });
+        } else {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithRedirect(provider);
+        }
     }
 }
 function toggleMenu() { document.getElementById('menuItems').classList.toggle('show'); }
@@ -927,26 +924,24 @@ function openPengunjung() {
 function hapusRiwayatPengunjung() {
     if (!isAdmin) return;
     if (confirm("JARVIS : ANDA YAKIN INGIN MENGHAPUS SEMUA RIWAYAT INI, TUAN?")) {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider).then((result) => {
-            if (result.user.email === "fajarilmanosaviar@gmail.com") {
-                // Menghapus kedua database secara bersamaan
-                Promise.all([
-                    db.ref('pengunjung_situs').remove(),
-                    db.ref('percobaan_admin_gagal').remove()
-                ]).then(() => {
-                    alert("JARVIS : RIWAYAT BERHASIL DIHAPUS!");
-                    openPengunjung();
-                }).catch((error) => {
-                    alert("🛑 DATABASE MENOLAK: " + error.message);
-                });
-            } else {
-                alert("🛑 AKSES DITOLAK!");
-                firebase.auth().signOut();
-            }
-        }).catch((error) => {
-            alert("🛑 VERIFIKASI GAGAL: " + error.message);
-        });
+        const currentUser = firebase.auth().currentUser;
+        
+        if (currentUser && currentUser.email === "fajarilmanosaviar@gmail.com") {
+            // Menghapus kedua database secara bersamaan jika sudah login
+            Promise.all([
+                db.ref('pengunjung_situs').remove(),
+                db.ref('percobaan_admin_gagal').remove()
+            ]).then(() => {
+                alert("JARVIS : RIWAYAT BERHASIL DIHAPUS!");
+                openPengunjung();
+            }).catch((error) => {
+                alert("🛑 DATABASE MENOLAK: " + error.message);
+            });
+        } else {
+            // Jika belum login, gunakan Redirect
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithRedirect(provider);
+        }
     }
 }
 // ================= LOGIKA KAS ASLI =================
@@ -1139,77 +1134,91 @@ function saveData() {
         return;
     }
 
-    // 2. SISTEM KEAMANAN GOOGLE AUTH
+    // 2. SISTEM KEAMANAN GOOGLE AUTH (REDIRECT MODE)
     try {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        alert("Memulai Verifikasi Google Admin...");
-
-        firebase.auth().signInWithPopup(provider).then((result) => {
-            const user = result.user;
-            const emailAdminResmi = "fajarilmanosaviar@gmail.com";
-
-            if (user.email !== emailAdminResmi) {
-                alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
-                firebase.auth().signOut();
-                return;
-            }
-
-// 3. PROSES AMBIL DATA & KIRIM
-            const btn = document.getElementById('saveBtnManual');
-            const originalText = btn.textContent;
-            btn.textContent = "PROSES...";
-            btn.disabled = true;
-
-            const tgl = new Date();
-            const formatUpdate = tgl.getDate() + " " + namaBulan[tgl.getMonth()] + " " + tgl.getFullYear() + ", " + tgl.getHours().toString().padStart(2, '0') + ":" + tgl.getMinutes().toString().padStart(2, '0') + " WIB";
-            
-            const m = [...document.querySelectorAll('#tbMasuk tr')].map(tr => ({
-                tanggal: tr.children[0].firstChild.value,
-                nama: tr.children[1].firstChild.value,
-                ket: tr.children[2].firstChild.value,
-                uang: tr.children[3].firstChild.value
-            }));
-            
-            const k = [...document.querySelectorAll('#tbKeluar tr')].map(tr => ({
-                tanggal: tr.children[0].firstChild.value,
-                ket: tr.children[1].firstChild.value,
-                qty: tr.children[2].firstChild.value,
-                harga: tr.children[3].firstChild.value,
-                bukti: tr.children[5].firstChild.value
-            }));
-
-            db.ref('kas_data/' + bulan + '-' + tahun).update({
-                masuk: m,
-                keluar: k,
-                updated: formatUpdate
-            })
-            .then(() => {
-                return db.ref('kas_data/catatan_umum').set(document.getElementById('catatanWarga').value);
-            })
-            .then(() => {
-                btn.textContent = originalText;
-                btn.disabled = false;
-                alert("✅ DATA BERHASIL DISIMPAN KE SERVER!");
-                
-                // Menutup panel admin tanpa refresh dan tanpa mengunci status isAdmin
-                const modalAdmin = document.getElementById('modalAdmin');
-                if (modalAdmin) {
-                    modalAdmin.style.display = 'none';
-                }
-            })
-            .catch((err) => {
-                alert("🛑 DATABASE MENOLAK: " + err.message);
-                btn.textContent = originalText;
-                btn.disabled = false;
-            });
-
-        }).catch((error) => {
-            alert("🛑 LOGIN GOOGLE GAGAL: " + error.message);
-        });
+        const currentUser = firebase.auth().currentUser;
+        
+        // JIKA SUDAH TERVERIFIKASI, LANGSUNG SIMPAN
+        if (currentUser && currentUser.email === "fajarilmanosaviar@gmail.com") {
+            prosesKirimDataKeFirebase();
+        } else {
+            // JIKA BELUM, LEMPAR KE GOOGLE (LEBIH STABIL DARI POPUP)
+            const provider = new firebase.auth.GoogleAuthProvider();
+            alert("Memulai Verifikasi Google Admin (Redirect Mode)...");
+            firebase.auth().signInWithRedirect(provider);
+        }
     } catch (e) {
         alert("Terjadi Error Sistem: " + e.message);
     }
 }
+
+// FUNGSI KHUSUS UNTUK EKSEKUSI DATA (AGAR KODE RAPI)
+function prosesKirimDataKeFirebase() {
+    const btn = document.getElementById('saveBtnManual');
+    const originalText = btn.textContent;
+    btn.textContent = "PROSES...";
+    btn.disabled = true;
+
+    const tgl = new Date();
+    const formatUpdate = tgl.getDate() + " " + namaBulan[tgl.getMonth()] + " " + tgl.getFullYear() + ", " + tgl.getHours().toString().padStart(2, '0') + ":" + tgl.getMinutes().toString().padStart(2, '0') + " WIB";
+    
+    const m = [...document.querySelectorAll('#tbMasuk tr')].map(tr => ({
+        tanggal: tr.children[0].firstChild.value,
+        nama: tr.children[1].firstChild.value,
+        ket: tr.children[2].firstChild.value,
+        uang: tr.children[3].firstChild.value
+    }));
+    
+    const k = [...document.querySelectorAll('#tbKeluar tr')].map(tr => ({
+        tanggal: tr.children[0].firstChild.value,
+        ket: tr.children[1].firstChild.value,
+        qty: tr.children[2].firstChild.value,
+        harga: tr.children[3].firstChild.value,
+        bukti: tr.children[5].firstChild.value
+    }));
+
+    db.ref('kas_data/' + bulan + '-' + tahun).update({
+        masuk: m,
+        keluar: k,
+        updated: formatUpdate
+    })
+    .then(() => {
+        return db.ref('kas_data/catatan_umum').set(document.getElementById('catatanWarga').value);
+    })
+    .then(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        alert("✅ DATA BERHASIL DISIMPAN KE SERVER!");
+        
+        const modalAdmin = document.getElementById('modalAdmin');
+        if (modalAdmin) {
+            modalAdmin.style.display = 'none';
+        }
+    })
+    .catch((err) => {
+        alert("🛑 DATABASE MENOLAK: " + err.message);
+        btn.textContent = originalText;
+        btn.disabled = false;
+    });
+}
+
+// 3. PENDETEKSI OTOMATIS SAAT KEMBALI DARI GOOGLE
+// Letakkan ini di bagian script bawah, di luar fungsi mana pun
+firebase.auth().getRedirectResult().then((result) => {
+    if (result.user) {
+        if (result.user.email === "fajarilmanosaviar@gmail.com") {
+            alert("✅ VERIFIKASI SUKSES, TUAN! Silakan klik tombol SIMPAN sekali lagi.");
+        } else {
+            alert("🛑 AKSES DITOLAK: Email Tidak Dikenal!");
+            firebase.auth().signOut();
+        }
+    }
+}).catch((error) => {
+    if (error.code !== "auth/network-request-failed") {
+        console.log("Jarvis: Menunggu perintah Tuan.");
+    }
+});
+
 // LOGIKA NAVIGASI TAHUN CHECKLIST
 let tahunChecklist = tahun;
 function changeChecklistYear(arah) {
@@ -1483,6 +1492,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
