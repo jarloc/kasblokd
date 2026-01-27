@@ -1095,7 +1095,10 @@ tr.innerHTML=`<td><input class='editable' type='date' value='${r.tanggal||''}'><
  });
 }
 function saveData() {
-    if (!isAdmin) return;
+    if (!isAdmin) {
+        alert("Akses Admin belum diaktifkan!");
+        return;
+    }
 
     // --- SISTEM KEAMANAN GOOGLE AUTH (ADD-ON) ---
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -1109,13 +1112,14 @@ function saveData() {
             return;
         }
 
+        // --- MULAI PROSES PENYIMPANAN ---
         const btn = document.getElementById('saveBtnManual');
         const originalText = btn.textContent;
         btn.textContent = "PROSES...";
         btn.disabled = true;
 
-        const tgl = new Date(),
-            formatUpdate = tgl.getDate() + " " + namaBulan[tgl.getMonth()] + " " + tgl.getFullYear() + ", " + tgl.getHours().toString().padStart(2, '0') + ":" + tgl.getMinutes().toString().padStart(2, '0') + " WIB";
+        const tgl = new Date();
+        const formatUpdate = tgl.getDate() + " " + namaBulan[tgl.getMonth()] + " " + tgl.getFullYear() + ", " + tgl.getHours().toString().padStart(2, '0') + ":" + tgl.getMinutes().toString().padStart(2, '0') + " WIB";
         
         const m = [...document.querySelectorAll('#tbMasuk tr')].map(tr => ({
             tanggal: tr.children[0].firstChild.value,
@@ -1132,7 +1136,7 @@ function saveData() {
             bukti: tr.children[5].firstChild.value
         }));
 
-        // PROSES UPDATE KE FIREBASE (Hanya jalan jika Auth Berhasil)
+        // Simpan ke Firebase
         db.ref('kas_data/' + bulan + '-' + tahun).update({
             masuk: m,
             keluar: k,
@@ -1147,8 +1151,8 @@ function saveData() {
             alert("✅ DATA BERHASIL DISIMPAN KE SERVER!");
             tutupAdmin();
         })
-        .catch((err) => {
-            alert("🛑 GAGAL SIMPAN KE DATABASE: " + err.message);
+        .catch((error) => {
+            alert("🛑 DATABASE MENOLAK: " + error.message);
             btn.textContent = originalText;
             btn.disabled = false;
         });
@@ -1157,7 +1161,6 @@ function saveData() {
         alert("🛑 GAGAL VERIFIKASI: " + error.message);
     });
 }
-
 // LOGIKA NAVIGASI TAHUN CHECKLIST
 let tahunChecklist = tahun;
 function changeChecklistYear(arah) {
@@ -1431,6 +1434,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
