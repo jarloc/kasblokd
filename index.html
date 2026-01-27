@@ -206,7 +206,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 <div id="welcomeScreen">
     <img src="https://ik.imagekit.io/k8plwfarx/logo.png" class="logo-welcome">
     <h1>SELAMAT DATANG DI WEBSITE KAS BLOK D PERUMAHAN GRIYA FAMILY 3</h1>
-    <p>Built and developed by Fajar Ilmanosa Viar . <b>V1.0.7</b> . Copyright © 2026 Blok D GF3 . All Rights Reserved.</p>
+    <p>Built and developed by Fajar Ilmanosa Viar . <b>V1.0.9</b> . Copyright © 2026 Blok D GF3 . All Rights Reserved.</p>
     <button id="enterBtn" onclick="masukWeb()">MASUK</button>
 </div>
 
@@ -302,7 +302,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 </div>
 
 <div style="text-align:center; margin-top:30px; margin-bottom:50px; padding:20px; border-top:1px solid var(--border); font-size:0.8rem; color:#888; text-transform:none;">
-    Built and developed by <b style="color:var(--accent);">Fajar Shanum D3/7</b> | V1.0.7 Supreme Security and Terms | Copyright &copy; 2026 Blok D GF3 . All Rights Reserved.
+    Built and developed by <b style="color:var(--accent);">Fajar Shanum D3/7</b> | V1.0.9 Supreme Security and Terms | Copyright &copy; 2026 Blok D GF3 . All Rights Reserved.
 </div>
 
 <div id="checklistModal">
@@ -1096,6 +1096,40 @@ tr.innerHTML=`<td><input class='editable' type='date' value='${r.tanggal||''}'><
 }
 function saveData(){
  if(!isAdmin) return;
+function saveData(){
+ if(!isAdmin) return;
+ 
+ // --- SISTEM KEAMANAN GOOGLE AUTH (ADD-ON) ---
+ const provider = new firebase.auth.GoogleAuthProvider();
+ firebase.auth().signInWithPopup(provider).then((result) => {
+    const user = result.user;
+    const emailAdminResmi = "fajarilmanosaviar@gmail.com";
+
+    if (user.email !== emailAdminResmi) {
+        alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
+        return;
+    }
+
+    // --- LANJUTKAN KODE ASLI TUAN JIKA EMAIL COCOK ---
+    const btn = document.getElementById('saveBtnManual');
+    const originalText = btn.textContent;
+    btn.textContent = "PROSES...";
+    
+    const tgl = new Date(), formatUpdate = tgl.getDate() + " " + namaBulan[tgl.getMonth()] + " " + tgl.getFullYear() + ", " + tgl.getHours().toString().padStart(2,'0') + ":" + tgl.getMinutes().toString().padStart(2,'0') + " WIB";
+    const m=[...document.querySelectorAll('#tbMasuk tr')].map(tr=>({tanggal:tr.children[0].firstChild.value, nama:tr.children[1].firstChild.value, ket:tr.children[2].firstChild.value, uang:tr.children[3].firstChild.value}));
+    const k=[...document.querySelectorAll('#tbKeluar tr')].map(tr=>({tanggal:tr.children[0].firstChild.value, ket:tr.children[1].firstChild.value, qty:tr.children[2].firstChild.value, harga:tr.children[3].firstChild.value, bukti:tr.children[5].firstChild.value}));
+    
+    db.ref('kas_data/'+bulan+'-'+tahun).update({masuk:m, keluar:k, updated:formatUpdate})
+    .then(() => {
+       db.ref('kas_data/catatan_umum').set(document.getElementById('catatanWarga').value);
+       btn.textContent = originalText;
+       alert("✅ DATA BERHASIL DISIMPAN KE SERVER!");
+    });
+
+ }).catch((error) => {
+    alert("🛑 GAGAL VERIFIKASI: " + error.message);
+ });
+}
  const btn = document.getElementById('saveBtnManual');
  const originalText = btn.textContent;
  btn.textContent = "PROSES...";
@@ -1384,6 +1418,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
