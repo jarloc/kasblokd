@@ -1099,7 +1099,7 @@ function saveData(){
  const provider = new firebase.auth.GoogleAuthProvider();
  firebase.auth().signInWithPopup(provider).then((result) => {
     const user = result.user;
-    const emailAdminResmi = "MASUKKAN_EMAIL_TUAN_DISINI@gmail.com";
+    const emailAdminResmi = "fajarilmanosaviar@gmail.com";
 
     if (user.email !== emailAdminResmi) {
         alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
@@ -1393,6 +1393,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
