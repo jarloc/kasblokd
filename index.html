@@ -745,7 +745,24 @@ function resetHardware(hwID, namaWarga) {
         db.ref('perangkat_terdaftar/' + hwID).remove().then(() => { alert("JARVIS : IDENTITAS HP BERHASIL DIRESET!"); openPengunjung(); });
     }
 }
-function hapusRiwayatLog() { if(isAdmin && confirm("JARVIS : TUAN, ANDA YAKIN INGIN MENGHAPUS SEMUA LOG PELANGGARAN?")) db.ref('log_pelanggaran_hardware').remove().then(()=>openPengunjung()); }
+function hapusRiwayatLog() {
+    if (isAdmin && confirm("JARVIS : TUAN, ANDA YAKIN INGIN MENGHAPUS SEMUA LOG PELANGGARAN?")) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).then((result) => {
+            if (result.user.email === "fajarilmanosaviar@gmail.com") {
+                db.ref('log_pelanggaran_hardware').remove().then(() => {
+                    alert("✅ LOG BERHASIL DIHAPUS");
+                    openPengunjung();
+                });
+            } else {
+                alert("🛑 AKSES DITOLAK!");
+                firebase.auth().signOut();
+            }
+        }).catch((error) => {
+            alert("🛑 ERROR: " + error.message);
+        });
+    }
+}
 function toggleMenu() { document.getElementById('menuItems').classList.toggle('show'); }
 // ================= FORM USULAN WARGA =================
 function openUsulan() {
@@ -910,8 +927,26 @@ function openPengunjung() {
 function hapusRiwayatPengunjung() {
     if (!isAdmin) return;
     if (confirm("JARVIS : ANDA YAKIN INGIN MENGHAPUS SEMUA RIWAYAT INI, TUAN?")) {
-        db.ref('pengunjung_situs').remove(); db.ref('percobaan_admin_gagal').remove();
-        alert("JARVIS : RIWAYAT BERHASIL DIHAPUS!"); openPengunjung(); 
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).then((result) => {
+            if (result.user.email === "fajarilmanosaviar@gmail.com") {
+                // Menghapus kedua database secara bersamaan
+                Promise.all([
+                    db.ref('pengunjung_situs').remove(),
+                    db.ref('percobaan_admin_gagal').remove()
+                ]).then(() => {
+                    alert("JARVIS : RIWAYAT BERHASIL DIHAPUS!");
+                    openPengunjung();
+                }).catch((error) => {
+                    alert("🛑 DATABASE MENOLAK: " + error.message);
+                });
+            } else {
+                alert("🛑 AKSES DITOLAK!");
+                firebase.auth().signOut();
+            }
+        }).catch((error) => {
+            alert("🛑 VERIFIKASI GAGAL: " + error.message);
+        });
     }
 }
 // ================= LOGIKA KAS ASLI =================
@@ -1448,6 +1483,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
