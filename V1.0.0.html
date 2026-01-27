@@ -206,7 +206,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 <div id="welcomeScreen">
     <img src="https://ik.imagekit.io/a0mxn2ls1/logo.png" alt="LOGO MAWAR 3" class="logo-welcome">
     <h1>SELAMAT DATANG DI WEBSITE KAS BLOK D PERUMAHAN GRIYA FAMILY 3</h1>
-    <p>Built and developed by Fajar Ilmanosa Viar . <b>V10.7.8</b> . Copyright © 2026 Gang Mawar 3 . All Rights Reserved.</p>
+    <p>Built and developed by Fajar Ilmanosa Viar . <b>V1.0.0</b> . Copyright © 2026 Blok D GF3 . All Rights Reserved.</p>
     <button id="enterBtn" onclick="masukWeb()">MASUK</button>
 </div>
 
@@ -302,7 +302,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 </div>
 
 <div style="text-align:center; margin-top:30px; margin-bottom:50px; padding:20px; border-top:1px solid var(--border); font-size:0.8rem; color:#888; text-transform:none;">
-    Built and developed by <b style="color:var(--accent);">Fajar Ilmanosa Viar</b> | V10.7.8 Supreme Security and Terms | Copyright &copy; 2026 Gang Mawar 3 . All Rights Reserved.
+    Built and developed by <b style="color:var(--accent);">Fajar Ilmanosa Viar</b> | V1.0.0 Supreme Security and Terms | Copyright &copy; 2026 Blok D GF3 . All Rights Reserved.
 </div>
 
 <div id="checklistModal">
@@ -312,7 +312,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
     </div>
 
     <div class="checklist-content" id="checklistPrintArea">
-        <h1 id="judulChecklist" style="text-align:center; background:#92c694; padding:10px; margin:0;">CHECKLIST KAS GANG MAWAR 3</h1>
+        <h1 id="judulChecklist" style="text-align:center; background:#92c694; padding:10px; margin:0;">CHECKLIST KAS BLOK D PERUMAHAN GRIYA FAMILY 3</h1>
         <h2 id="subJudulChecklist" style="text-align:center; background:#d9ead3; padding:5px; border-bottom:2px solid #000; margin:0; display:flex; justify-content:center; align-items:center; gap:20px;">
             <button onclick="changeChecklistYear(-1)" style="padding:5px 15px; font-size:1rem; background:#333; color:#fff;">◀</button>
             <span id="txtTahunChecklist">PERIODE 2026</span>
@@ -467,23 +467,45 @@ document.querySelectorAll('#tbKeluar tr').forEach(tr=>{
 });
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAn5Iw4cI8bRSGuyRr3TNNVWzQA-duRHvk",
-    authDomain: "kasmawar3-59c18.firebaseapp.com",
-    databaseURL: "https://kasmawar3-59c18-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "kasmawar3-59c18",
-    storageBucket: "kasmawar3-59c18.firebasestorage.app",
-    messagingSenderId: "643313437210",
-    appId: "1:643313437210:web:7377bbd6e4cd9aa33b5fa3",
-    measurementId: "G-KY0GS26WNT"
+    apiKey: "AIzaSyCvhJiTrCO265KbEniS4q72HphOUw-SghE",
+    authDomain: "kasblokd.firebaseapp.com",
+    databaseURL: "https://kasblokd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "kasblokd",
+    storageBucket: "kasblokd.firebasestorage.app",
+    messagingSenderId: "1005953920782",
+    appId: "1:1005953920782:web:fa936c8b6e47c07491f15f"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const daftarKunci = {
-    "D3/2": "RIZAL", "D3/3": "ROMI", "D3/4": "TRI", "D3/5": "ANIS",
-    "D3/6": "FAJAR DJAKA", "D3/7": "FAJAR SHANUM", "D3/10": "AGUS", "D3/11": "LUKMAN",
-    "D2/16": "IRAWAN", "D2/17": "RIAN", "D2/18": "MULYADIE", "D2/19": "HELDI",
-    "D2/20": "HILMAN", "D2/21": "HILMAN", "D2/22": "NANO", "D2/23": "TEGUH"
+    // BLOK D1 (BAPAK1-BAPAK25)
+    "D1/1": "BAPAK1", "D1/2": "BAPAK2", "D1/3": "BAPAK3", "D1/4": "BAPAK4", "D1/5": "BAPAK5",
+    "D1/6": "BAPAK6", "D1/7": "BAPAK7", "D1/8": "BAPAK8", "D1/9": "BAPAK9", "D1/10": "BAPAK10",
+    "D1/11": "BAPAK11", "D1/12": "BAPAK12", "D1/13": "BAPAK13", "D1/14": "BAPAK14", "D1/15": "BAPAK15",
+    "D1/16": "BAPAK16", "D1/17": "BAPAK17", "D1/18": "BAPAK18", "D1/19": "BAPAK19", "D1/20": "BAPAK20",
+    "D1/21": "BAPAK21", "D1/22": "BAPAK22", "D1/23": "BAPAK23", "D1/24": "BAPAK24", "D1/25": "BAPAK25",
+
+    // BLOK D2 (BAPAK26-BAPAK50)
+    "D2/1": "BAPAK26", "D2/2": "BAPAK27", "D2/3": "BAPAK28", "D2/4": "BAPAK29", "D2/5": "BAPAK30",
+    "D2/6": "BAPAK31", "D2/7": "BAPAK32", "D2/8": "BAPAK33", "D2/9": "BAPAK34", "D2/10": "BAPAK35",
+    "D2/11": "BAPAK36", "D2/12": "BAPAK37", "D2/13": "BAPAK38", "D2/14": "BAPAK39", "D2/15": "BAPAK40",
+    "D2/16": "IRAWAN", "D2/17": "RIAN", "D2/18": "MULYADIE", "D2/19": "HELDI", "D2/20": "HILMAN", 
+    "D2/21": "HILMAN", "D2/22": "NANO", "D2/23": "TEGUH", "D2/24": "BAPAK49", "D2/25": "BAPAK50",
+
+    // BLOK D3 (BAPAK51-BAPAK75)
+    "D3/1": "BAPAK51", "D3/2": "RIZAL", "D3/3": "ROMI", "D3/4": "TRI", "D3/5": "ANIS",
+    "D3/6": "FAJAR DJAKA", "D3/7": "FAJAR SHANUM", "D3/8": "BAPAK58", "D3/9": "BAPAK59", "D3/10": "AGUS",
+    "D3/11": "LUKMAN", "D3/12": "BAPAK62", "D3/13": "BAPAK63", "D3/14": "BAPAK64", "D3/15": "BAPAK65",
+    "D3/16": "BAPAK66", "D3/17": "BAPAK67", "D3/18": "BAPAK68", "D3/19": "BAPAK69", "D3/20": "BAPAK70",
+    "D3/21": "BAPAK71", "D3/22": "BAPAK72", "D3/23": "BAPAK73", "D3/24": "BAPAK74", "D3/25": "BAPAK75",
+
+    // BLOK D4 (BAPAK76-BAPAK100)
+    "D4/1": "BAPAK76", "D4/2": "BAPAK77", "D4/3": "BAPAK78", "D4/4": "BAPAK79", "D4/5": "BAPAK80",
+    "D4/6": "BAPAK81", "D4/7": "BAPAK82", "D4/8": "BAPAK83", "D4/9": "BAPAK84", "D4/10": "BAPAK85",
+    "D4/11": "BAPAK86", "D4/12": "BAPAK87", "D4/13": "BAPAK88", "D4/14": "BAPAK89", "D4/15": "BAPAK90",
+    "D4/16": "BAPAK91", "D4/17": "BAPAK92", "D4/18": "BAPAK93", "D4/19": "BAPAK94", "D4/20": "BAPAK95",
+    "D4/21": "BAPAK96", "D4/22": "BAPAK97", "D4/23": "BAPAK98", "D4/24": "BAPAK99", "D4/25": "BAPAK100"
 };
 
 const skrg = new Date();
@@ -571,7 +593,7 @@ function getSystemIntel() {
 }
 
 async function masukWeb() {
-    let kunci = prompt("🔑 Masuk pakai nomor rumah masing-masing yaa pak!\n\nTULIS DISINI NOMOR RUMAH ANDA :");
+    let kunci = prompt("🔑 Masuk pakai nomor blok rumah masing-masing yaa pak!\nContoh : D5/27\n\nTULIS DISINI NOMOR RUMAH ANDA :");
     if (!kunci) return;
     
     // Pembersihan cerdas: buang kata BLOK, NOMOR, NOMER, NO, titik, spasi, dash
@@ -582,19 +604,31 @@ async function masukWeb() {
     
     // Logika menyisipkan "/" jika warga hanya ngetik angka atau format D223
     let bersih = raw;
-    if (!bersih.includes('/') && (bersih.startsWith('D3') || bersih.startsWith('D2')) && bersih.length >= 3) {
-        if(bersih.startsWith('D3')) bersih = "D3/" + bersih.substring(2);
+    if (!bersih.includes('/') && (bersih.startsWith('D1') || bersih.startsWith('D2') || bersih.startsWith('D3') || bersih.startsWith('D4')) && bersih.length >= 3) {
+        if(bersih.startsWith('D1')) bersih = "D1/" + bersih.substring(2);
         else if(bersih.startsWith('D2')) bersih = "D2/" + bersih.substring(2);
-    }
+        else if(bersih.startsWith('D3')) bersih = "D3/" + bersih.substring(2);
+        else if(bersih.startsWith('D4')) bersih = "D4/" + bersih.substring(2);
+}
     
     // Jika warga hanya ngetik angkanya saja (misal: 23), kita cari di daftarKunci
     if (!isNaN(bersih)) {
-        let foundKey = Object.keys(daftarKunci).find(key => key.split('/')[1] === bersih);
-        if (foundKey) bersih = foundKey;
+        let matches = Object.keys(daftarKunci).filter(key => key.split('/')[1] === bersih);
+        if (matches.length > 1) {
+        alert("❌ GAGAL MASUK!\nNomor " + bersih + " ada di beberapa blok (D1, D2, D3, D4).\n\nMohon tulis lengkap dengan bloknya ya pak!\nContoh: D5/27");
+        return; 
+    } else if (matches.length === 1) {
+        bersih = matches[0];
     }
-    
-    if (daftarKunci[bersih]) { await prosesMasukHardware(daftarKunci[bersih], bersih); } else { alert("❌ NOMOR RUMAH TIDAK TERDAFTAR!\nAwas salah tulis pak! Pastikan anda masuk menggunakan nomor rumah anda sendiri!"); }
 }
+
+    // --- TAMBAHAN WAJIB AGAR DATA DIPROSES ---
+    if (daftarKunci[bersih]) { 
+        await prosesMasukHardware(daftarKunci[bersih], bersih); 
+    } else { 
+        alert("❌ NOMOR RUMAH TIDAK TERDAFTAR!"); 
+    }
+} // <--- PENUTUP FUNGSI masukWeb() YANG HILANG
 
 async function prosesMasukHardware(namaUser, kunci) {
     const fPrint = await getSupremeFingerprint();
@@ -1342,6 +1376,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
