@@ -1119,7 +1119,7 @@ function saveData() {
                 return;
             }
 
-            // 3. PROSES AMBIL DATA & KIRIM
+// 3. PROSES AMBIL DATA & KIRIM
             const btn = document.getElementById('saveBtnManual');
             const originalText = btn.textContent;
             btn.textContent = "PROSES...";
@@ -1155,7 +1155,12 @@ function saveData() {
                 btn.textContent = originalText;
                 btn.disabled = false;
                 alert("✅ DATA BERHASIL DISIMPAN KE SERVER!");
-                tutupAdmin();
+                
+                // Menutup panel admin tanpa refresh dan tanpa mengunci status isAdmin
+                const modalAdmin = document.getElementById('modalAdmin');
+                if (modalAdmin) {
+                    modalAdmin.style.display = 'none';
+                }
             })
             .catch((err) => {
                 alert("🛑 DATABASE MENOLAK: " + err.message);
@@ -1443,6 +1448,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
