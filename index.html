@@ -1095,71 +1095,79 @@ tr.innerHTML=`<td><input class='editable' type='date' value='${r.tanggal||''}'><
  });
 }
 function saveData() {
+    // 1. Tes awal untuk memastikan fungsi terpanggil
+    console.log("Tombol Simpan Berhasil Diakses");
+
     if (!isAdmin) {
-        alert("Akses Admin belum diaktifkan!");
+        alert("Sesi Admin Tidak Aktif!");
         return;
     }
 
-    // --- SISTEM KEAMANAN GOOGLE AUTH (ADD-ON) ---
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then((result) => {
-        const user = result.user;
-        const emailAdminResmi = "fajarilmanosaviar@gmail.com";
+    // 2. SISTEM KEAMANAN GOOGLE AUTH
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        alert("Memulai Verifikasi Google Admin...");
 
-        if (user.email !== emailAdminResmi) {
-            alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
-            firebase.auth().signOut();
-            return;
-        }
+        firebase.auth().signInWithPopup(provider).then((result) => {
+            const user = result.user;
+            const emailAdminResmi = "fajarilmanosaviar@gmail.com";
 
-        // --- MULAI PROSES PENYIMPANAN ---
-        const btn = document.getElementById('saveBtnManual');
-        const originalText = btn.textContent;
-        btn.textContent = "PROSES...";
-        btn.disabled = true;
+            if (user.email !== emailAdminResmi) {
+                alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
+                firebase.auth().signOut();
+                return;
+            }
 
-        const tgl = new Date();
-        const formatUpdate = tgl.getDate() + " " + namaBulan[tgl.getMonth()] + " " + tgl.getFullYear() + ", " + tgl.getHours().toString().padStart(2, '0') + ":" + tgl.getMinutes().toString().padStart(2, '0') + " WIB";
-        
-        const m = [...document.querySelectorAll('#tbMasuk tr')].map(tr => ({
-            tanggal: tr.children[0].firstChild.value,
-            nama: tr.children[1].firstChild.value,
-            ket: tr.children[2].firstChild.value,
-            uang: tr.children[3].firstChild.value
-        }));
-        
-        const k = [...document.querySelectorAll('#tbKeluar tr')].map(tr => ({
-            tanggal: tr.children[0].firstChild.value,
-            ket: tr.children[1].firstChild.value,
-            qty: tr.children[2].firstChild.value,
-            harga: tr.children[3].firstChild.value,
-            bukti: tr.children[5].firstChild.value
-        }));
+            // 3. PROSES AMBIL DATA & KIRIM
+            const btn = document.getElementById('saveBtnManual');
+            const originalText = btn.textContent;
+            btn.textContent = "PROSES...";
+            btn.disabled = true;
 
-        // Simpan ke Firebase
-        db.ref('kas_data/' + bulan + '-' + tahun).update({
-            masuk: m,
-            keluar: k,
-            updated: formatUpdate
-        })
-        .then(() => {
-            return db.ref('kas_data/catatan_umum').set(document.getElementById('catatanWarga').value);
-        })
-        .then(() => {
-            btn.textContent = originalText;
-            btn.disabled = false;
-            alert("✅ DATA BERHASIL DISIMPAN KE SERVER!");
-            tutupAdmin();
-        })
-        .catch((error) => {
-            alert("🛑 DATABASE MENOLAK: " + error.message);
-            btn.textContent = originalText;
-            btn.disabled = false;
+            const tgl = new Date();
+            const formatUpdate = tgl.getDate() + " " + namaBulan[tgl.getMonth()] + " " + tgl.getFullYear() + ", " + tgl.getHours().toString().padStart(2, '0') + ":" + tgl.getMinutes().toString().padStart(2, '0') + " WIB";
+            
+            const m = [...document.querySelectorAll('#tbMasuk tr')].map(tr => ({
+                tanggal: tr.children[0].firstChild.value,
+                nama: tr.children[1].firstChild.value,
+                ket: tr.children[2].firstChild.value,
+                uang: tr.children[3].firstChild.value
+            }));
+            
+            const k = [...document.querySelectorAll('#tbKeluar tr')].map(tr => ({
+                tanggal: tr.children[0].firstChild.value,
+                ket: tr.children[1].firstChild.value,
+                qty: tr.children[2].firstChild.value,
+                harga: tr.children[3].firstChild.value,
+                bukti: tr.children[5].firstChild.value
+            }));
+
+            db.ref('kas_data/' + bulan + '-' + tahun).update({
+                masuk: m,
+                keluar: k,
+                updated: formatUpdate
+            })
+            .then(() => {
+                return db.ref('kas_data/catatan_umum').set(document.getElementById('catatanWarga').value);
+            })
+            .then(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                alert("✅ DATA BERHASIL DISIMPAN KE SERVER!");
+                tutupAdmin();
+            })
+            .catch((err) => {
+                alert("🛑 DATABASE MENOLAK: " + err.message);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            });
+
+        }).catch((error) => {
+            alert("🛑 LOGIN GOOGLE GAGAL: " + error.message);
         });
-
-    }).catch((error) => {
-        alert("🛑 GAGAL VERIFIKASI: " + error.message);
-    });
+    } catch (e) {
+        alert("Terjadi Error Sistem: " + e.message);
+    }
 }
 // LOGIKA NAVIGASI TAHUN CHECKLIST
 let tahunChecklist = tahun;
@@ -1434,6 +1442,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
