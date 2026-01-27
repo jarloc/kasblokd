@@ -1478,17 +1478,54 @@ window.onbeforeunload = function() {
 // ==========================================
 // LOGIKA ADMIN HP ON/OFF (KONEKSI GOOGLE)
 // ==========================================
+// 1. FUNGSI KONEKSI (REDIRECT KE GOOGLE)
+async function koneksiAdmin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        alert("JARVIS: MENGHUBUNGKAN KE SERVER GOOGLE...");
+        firebase.auth().signInWithRedirect(provider);
+    } catch (error) {
+        alert("🛑 SISTEM ERROR: " + error.message);
+    }
+}
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCvhJiTrCO265KbEniS4q72HphOUw-SghE",
-    authDomain: "kasblokd.firebaseapp.com",
-    databaseURL: "https://kasblokd-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "kasblokd",
-    storageBucket: "kasblokd.firebasestorage.app",
-    messagingSenderId: "1005953920782",
-    appId: "1:1005953920782:web:fa936c8b6e47c07491f15f"
-};
+// 2. RADAR PENYELAMAT (MENEMBUS BLOKIR HP)
+function radarStatusAdmin() {
+    const user = firebase.auth().currentUser;
+    const btnHP = document.getElementById('btnKoneksi');
+    const memoriLokal = localStorage.getItem("admin_verified");
 
+    // Jika user terdeteksi Firebase ATAU ada jejak di memori HP
+    if ((user && user.email === "fajarilmanosaviar@gmail.com") || memoriLokal === "true") {
+        if (btnHP && btnHP.innerHTML !== "✅ ADMIN HP ON 🔓") {
+            btnHP.innerHTML = "✅ ADMIN HP ON 🔓";
+            btnHP.style.backgroundColor = "#27ae60";
+            btnHP.style.borderColor = "#1e8449";
+            btnHP.disabled = true;
+            
+            // Tanamkan status permanen di HP
+            localStorage.setItem("admin_verified", "true");
+        }
+    }
+}
+
+// 3. PENJEMPUT DATA SETELAH REDIRECT
+firebase.auth().getRedirectResult().then((result) => {
+    if (result && result.user) {
+        if (result.user.email === "fajarilmanosaviar@gmail.com") {
+            localStorage.setItem("admin_verified", "true");
+            alert("✅ STATUS ADMIN AKTIF!");
+            location.reload(); // Refresh untuk mengunci status
+        }
+    }
+}).catch((error) => {
+    console.log("Jarvis: Menunggu Login...");
+});
+
+// Jalankan Radar Secara Agresif
+setInterval(radarStatusAdmin, 1000);
+firebase.auth().onAuthStateChanged(radarStatusAdmin);
 </script>
 <div id="modalPerangkat" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
     <div style="background:#fff; width:100%; max-width:800px; border-radius:10px; padding:20px; color:#000; max-height:90vh; overflow-y:auto;">
@@ -1510,6 +1547,7 @@ const firebaseConfig = {
 </div>
 </body>
 </html>
+
 
 
 
