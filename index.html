@@ -547,7 +547,7 @@ async function generateAlias(namaMurni, fPrint) {
  /* --- SUPREME SECURITY HARDWARE GENERATOR --- */
 async function getSupremeFingerprint() {
     const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-    ctx.fillText("Mawar3-V10.2-Supreme-Sec", 2, 2);
+    ctx.fillText("BlokDGF3-V10.2-Supreme-Sec", 2, 2);
     const b64 = canvas.toDataURL(); let hash = 0;
     for (let i = 0; i < b64.length; i++) { hash = ((hash << 5) - hash) + b64.charCodeAt(i); hash |= 0; }
     return "HW-" + Math.abs(hash).toString(16).toUpperCase() + "-" + screen.width;
@@ -1376,6 +1376,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
