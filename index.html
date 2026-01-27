@@ -1479,68 +1479,16 @@ window.onbeforeunload = function() {
 // LOGIKA ADMIN HP ON/OFF (KONEKSI GOOGLE)
 // ==========================================
 
-// 1. FUNGSI KONEKSI DENGAN PERSISTENCE LOCAL (KUNCI AWAL)
-async function koneksiAdmin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    try {
-        // Memastikan browser HP tidak lupa identitas Tuan
-        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        alert("JARVIS: MEMBUKA JALUR ENKRIPSI GOOGLE, TUAN...");
-        firebase.auth().signInWithRedirect(provider);
-    } catch (error) {
-        alert("🛑 SISTEM MEMORI ERROR: " + error.message);
-    }
-}
+const firebaseConfig = {
+    apiKey: "AIzaSyCvhJiTrCO265KbEniS4q72HphOUw-SghE",
+    authDomain: "kasblokd.firebaseapp.com",
+    databaseURL: "https://kasblokd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "kasblokd",
+    storageBucket: "kasblokd.firebasestorage.app",
+    messagingSenderId: "1005953920782",
+    appId: "1:1005953920782:web:fa936c8b6e47c07491f15f"
+};
 
-// 2. RADAR STATUS DENGAN DOUBLE LOCK (FIREBASE + LOCALSTORAGE)
-function radarStatusAdmin() {
-    const user = firebase.auth().currentUser;
-    const btnHP = document.getElementById('btnKoneksi');
-    // Membaca "Kunci Cadangan" dari memori permanen HP
-    const kunciCadangan = localStorage.getItem("statusAdminTuan");
-
-    if ((user && user.email === "fajarilmanosaviar@gmail.com") || kunciCadangan === "AKTIF") {
-        if (btnHP && btnHP.innerHTML !== "✅ ADMIN HP ON 🔓") {
-            btnHP.innerHTML = "✅ ADMIN HP ON 🔓";
-            btnHP.style.backgroundColor = "#27ae60";
-            btnHP.style.borderColor = "#1e8449";
-            btnHP.style.color = "white";
-            btnHP.disabled = true;
-            
-            // Jika login berhasil terdeteksi, perkuat Kunci Cadangan
-            if (user && user.email === "fajarilmanosaviar@gmail.com") {
-                localStorage.setItem("statusAdminTuan", "AKTIF");
-            }
-            console.log("Jarvis: Akses Admin HP Terkunci Permanen.");
-        }
-    }
-}
-
-// 3. PENJEMPUT HASIL REDIRECT (EKSEKUSI PASCA-LOGIN)
-firebase.auth().getRedirectResult().then((result) => {
-    if (result && result.user) {
-        if (result.user.email === "fajarilmanosaviar@gmail.com") {
-            // Menanamkan Kunci Cadangan segera setelah Google memberi izin
-            localStorage.setItem("statusAdminTuan", "AKTIF");
-            alert("✅ VERIFIKASI BERHASIL! STATUS ADMIN HP SEKARANG: ON 🔓");
-            radarStatusAdmin();
-        } else {
-            alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
-            firebase.auth().signOut();
-            localStorage.removeItem("statusAdminTuan");
-        }
-    }
-}).catch((error) => {
-    console.log("Jarvis: Menunggu instruksi Tuan.");
-});
-
-// Jalankan Radar setiap 1 detik (Menunggu Tuan melewati Welcome Screen)
-setInterval(radarStatusAdmin, 1000);
-
-// Pantau perubahan status secara alami
-firebase.auth().onAuthStateChanged((user) => {
-    radarStatusAdmin();
-});
 </script>
 <div id="modalPerangkat" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
     <div style="background:#fff; width:100%; max-width:800px; border-radius:10px; padding:20px; color:#000; max-height:90vh; overflow-y:auto;">
@@ -1562,6 +1510,7 @@ firebase.auth().onAuthStateChanged((user) => {
 </div>
 </body>
 </html>
+
 
 
 
