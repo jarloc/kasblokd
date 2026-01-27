@@ -755,7 +755,7 @@ function openUsulan() {
 function showInputUsulan() { document.getElementById('formInputUsulan').style.display = 'block'; }
 function batalUsulan() { document.getElementById('formInputUsulan').style.display = 'none'; document.getElementById('txtUsulan').value = ''; }
 function kirimUsulan() {
-    const teks = document.getElementById('txtUsulan').value;
+     const teks = document.getElementById('txtUsulan').value;
     if(!teks) return alert("Usulan tidak boleh kosong!");
     const skrgLog = new Date();
     const tglJam = skrgLog.getDate() + "/" + (skrgLog.getMonth()+1) + "/" + skrgLog.getFullYear() + " " + skrgLog.getHours().toString().padStart(2,'0') + ":" + skrgLog.getMinutes().toString().padStart(2,'0');
@@ -1096,6 +1096,15 @@ tr.innerHTML=`<td><input class='editable' type='date' value='${r.tanggal||''}'><
 }
 function saveData(){
  if(!isAdmin) return;
+ const provider = new firebase.auth.GoogleAuthProvider();
+ firebase.auth().signInWithPopup(provider).then((result) => {
+    const user = result.user;
+    const emailAdminResmi = "MASUKKAN_EMAIL_TUAN_DISINI@gmail.com";
+
+    if (user.email !== emailAdminResmi) {
+        alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
+        return;
+    }
  const btn = document.getElementById('saveBtnManual');
  const originalText = btn.textContent;
  btn.textContent = "PROSES...";
@@ -1384,28 +1393,6 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
