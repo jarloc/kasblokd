@@ -1479,11 +1479,10 @@ window.onbeforeunload = function() {
 // LOGIKA ADMIN HP ON/OFF (KONEKSI GOOGLE)
 // ==========================================
 
-// 1. Fungsi untuk memicu login Google Redirect dengan Memori Permanen
+// 1. FUNGSI KONEKSI (TETAP PERTAHANKAN ASYNC DAN PERSISTENCE)
 async function koneksiAdmin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     try {
-        // Memaksa browser HP mengingat login Tuan (Anti-Loop)
         await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
         alert("JARVIS: MEMBUKA JALUR ENKRIPSI GOOGLE, TUAN...");
         firebase.auth().signInWithRedirect(provider);
@@ -1492,44 +1491,44 @@ async function koneksiAdmin() {
     }
 }
 
-// 2. Detektor otomatis untuk merubah status tombol (Fast Response)
-firebase.auth().onAuthStateChanged((user) => {
+// 2. RADAR STATUS DENGAN VALIDASI INSTAN
+function radarStatusAdmin() {
+    const user = firebase.auth().currentUser;
     const btnHP = document.getElementById('btnKoneksi');
+    
     if (user && user.email === "fajarilmanosaviar@gmail.com") {
-        if (btnHP) {
+        if (btnHP && btnHP.innerHTML !== "✅ ADMIN HP ON 🔓") {
             btnHP.innerHTML = "✅ ADMIN HP ON 🔓";
-            btnHP.style.backgroundColor = "#27ae60"; 
+            btnHP.style.backgroundColor = "#27ae60";
             btnHP.style.borderColor = "#1e8449";
-            btnHP.disabled = true; 
-        }
-        console.log("Jarvis: Koneksi Admin Google Aktif.");
-    } else {
-        if (btnHP) {
-            btnHP.innerHTML = "⛔ ADMIN HP OFF 🔒";
-            btnHP.style.backgroundColor = "#e74c3c"; 
-            btnHP.style.borderColor = "#c0392b";
-            btnHP.disabled = false;
+            btnHP.disabled = true;
+            console.log("Jarvis: Akses Admin HP Terdeteksi!");
         }
     }
-});
+}
 
-// 3. Menangani hasil Redirect dengan Penjemputan Paksa (Solusi Blokir Browser)
+// 3. PENANGAN HASIL REDIRECT (DIPRIORITASKAN)
 firebase.auth().getRedirectResult().then((result) => {
     if (result && result.user) {
         if (result.user.email === "fajarilmanosaviar@gmail.com") {
             alert("✅ VERIFIKASI BERHASIL! STATUS ADMIN HP SEKARANG: ON 🔓");
+            radarStatusAdmin(); // Jalankan radar seketika saat sukses
         } else {
             alert("🛑 AKSES DITOLAK: EMAIL TIDAK DIKENALI!");
             firebase.auth().signOut();
         }
     }
 }).catch((error) => {
-    // Memberikan info jika domain atau setelan browser bermasalah
     if (error.code === "auth/unauthorized-domain") {
         alert("🛑 DOMAIN BELUM TERDAFTAR DI FIREBASE CONSOLE, TUAN!");
-    } else if (error.code !== "auth/network-request-failed") {
-        console.log("Jarvis: Menunggu instruksi Tuan.");
     }
+});
+
+// 4. PENGAKTIF RADAR OTOMATIS
+setInterval(radarStatusAdmin, 1000); // Cek setiap detik (untuk menembus Welcome Screen)
+
+firebase.auth().onAuthStateChanged((user) => {
+    radarStatusAdmin(); // Cek saat status auth berubah
 });
 </script>
 <div id="modalPerangkat" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
@@ -1552,6 +1551,7 @@ firebase.auth().getRedirectResult().then((result) => {
 </div>
 </body>
 </html>
+
 
 
 
