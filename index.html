@@ -593,7 +593,7 @@ function getSystemIntel() {
 }
 
 async function masukWeb() {
-    let kunci = prompt("🔑 Masuk pakai nomor blok rumah masing-masing yaa pak!\nContoh : D5/27\n\nTULIS DISINI NOMOR RUMAH ANDA :");
+    let kunci = prompt("🔑 Masuk pakai nomor blok rumah masing-masing yaa pak!\nContoh : D5/27\n\nTULIS DISINI NOMOR BLOK RUMAH ANDA :");
     if (!kunci) return;
     
     // Pembersihan cerdas: buang kata BLOK, NOMOR, NOMER, NO, titik, spasi, dash
@@ -615,7 +615,7 @@ async function masukWeb() {
     if (!isNaN(bersih)) {
         let matches = Object.keys(daftarKunci).filter(key => key.split('/')[1] === bersih);
         if (matches.length > 1) {
-        alert("❌ GAGAL MASUK!\nNomor " + bersih + " ada di beberapa blok (D1, D2, D3, D4).\n\nMohon tulis lengkap dengan bloknya ya pak!\nContoh: D5/27");
+        alert("❌ GAGAL MASUK!\nNomor " + bersih + " ada di beberapa blok (D1, D2, D3, D4).\n\nMohon tulis lengkap dengan bloknya ya pak!\nContoh penulisan: D5/27");
         return; 
     } else if (matches.length === 1) {
         bersih = matches[0];
@@ -626,7 +626,7 @@ async function masukWeb() {
     if (daftarKunci[bersih]) { 
         await prosesMasukHardware(daftarKunci[bersih], bersih); 
     } else { 
-        alert("❌ NOMOR RUMAH TIDAK TERDAFTAR!"); 
+        alert("❌ NOMOR RUMAH TIDAK TERDAFTAR!\nJangan salah tulis yaa pak, kalo nulisnya udah bener tapi masih ga bisa coba japri ke bendahara"); 
     }
 } // <--- PENUTUP FUNGSI masukWeb() YANG HILANG
 
@@ -1376,6 +1376,7 @@ window.onbeforeunload = function() {
 </div>
 </body>
 </html>
+
 
 
 
