@@ -1478,15 +1478,13 @@ window.onbeforeunload = function() {
 // ==========================================
 // LOGIKA ADMIN HP ON/OFF (KONEKSI GOOGLE)
 // ==========================================
-// 1. FUNGSI KONEKSI (REDIRECT KE GOOGLE)
 async function koneksiAdmin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     try {
-        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        alert("JARVIS: MENGHUBUNGKAN KE SERVER GOOGLE...");
-        firebase.auth().signInWithRedirect(provider);
+        alert("JARVIS: MENGHUBUNGKAN KE SERVER GOOGLE (POPUP)...");
+        await firebase.auth().signInWithPopup(provider);
     } catch (error) {
-        alert("🛑 SISTEM ERROR: " + error.message);
+        alert("🛑 LOGIN DIBATALKAN");
     }
 }
 
@@ -1547,6 +1545,7 @@ firebase.auth().onAuthStateChanged(radarStatusAdmin);
 </div>
 </body>
 </html>
+
 
 
 
