@@ -1514,7 +1514,6 @@ firebase.auth().getRedirectResult().then((result) => {
         if (result.user.email === "fajarilmanosaviar@gmail.com") {
             localStorage.setItem("admin_verified", "true");
             alert("✅ STATUS ADMIN AKTIF!");
-            location.reload(); // Refresh untuk mengunci status
         }
     }
 }).catch((error) => {
@@ -1545,6 +1544,7 @@ firebase.auth().onAuthStateChanged(radarStatusAdmin);
 </div>
 </body>
 </html>
+
 
 
 
