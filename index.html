@@ -206,7 +206,7 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 <div id="welcomeScreen">
     <img src="https://ik.imagekit.io/k8plwfarx/logo.png" class="logo-welcome">
     <h1>SELAMAT DATANG DI WEBSITE KAS BLOK D PERUMAHAN GRIYA FAMILY 3</h1>
-    <p>Built and developed by Fajar Ilmanosa Viar . <b>V1.4.6</b> . Copyright © 2026 Blok D GF3 . All Rights Reserved.</p>
+    <p>Built and developed by Fajar Ilmanosa Viar . <b>V1.5.7</b> . Copyright © 2026 Blok D GF3 . All Rights Reserved.</p>
     <button id="enterBtn" onclick="masukWeb()">MASUK</button>
 </div>
 
@@ -248,12 +248,10 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 <div class="menu-container" id="mainMenuContainer">
     <button class="main-menu" onclick="toggleMenu()">☰ MENU</button>
     <div class="menu-items" id="menuItems">
-        <button id="btnKoneksi" onclick="koneksiAdmin()" style="background:#e74c3c; color:#fff; font-weight:bold; border-bottom: 2px solid #fff; margin-bottom: 5px;">
-            ⛔ ADMIN HP OFF 🔒
-        </button>
-
-        <button id="adminBtn" class="off">⛔ ADMIN LAPTOP OFF 🔒</button>
+        <button id="adminBtn" class="off">⛔ LOGIN ADMIN 🔒</button>
         <div id="adminTools">
+            <button id="btnKoneksi" onclick="koneksiAdmin()" style="background:#e74c3c; color:#fff; font-weight:bold; border-bottom: 2px solid #fff; margin-bottom: 5px;">
+            ⛔ ANDA BELUM TERKONEKSI KE DATABASE 🔒</button>
             <button onclick="tambahBaris('WARGA')" style="background:#28a745; color:#fff;">👤 TAMBAH WARGA</button>
             <button onclick="tambahBaris('LAIN')" style="background:#17a2b8; color:#fff;">📥 TAMBAH PEMASUKAN</button>
             <button onclick="tambahBaris('KELUAR')" style="background:#d9534f; color:#fff;">📤 TAMBAH PENGELUARAN</button>
@@ -301,12 +299,12 @@ Copyright © 2026 Administrasi KAS BLOK D PERUMAHAN GRIYA FAMILY 3. Seluruh Hak 
 <div class="block note-box">
   <h2 style="text-align:left; font-size:1.1rem; border-bottom:1px solid var(--border); padding-bottom:10px">📌 CATATAN PENTING</h2>
   <div class="pulse-line"></div>
-  <textarea id="catatanWarga" class="editable" placeholder="Klik Admin ON untuk mengisi catatan di sini..." oninput="autoHeight(this)"></textarea>
+  <textarea id="catatanWarga" class="editable" placeholder="Masuk sebagai Admin untuk mengisi catatan di sini..." oninput="autoHeight(this)"></textarea>
   <div id="catatanPrint"></div>
 </div>
 
 <div style="text-align:center; margin-top:30px; margin-bottom:50px; padding:20px; border-top:1px solid var(--border); font-size:0.8rem; color:#888; text-transform:none;">
-    Built and developed by <b style="color:var(--accent);">Fajar Shanum D3/7</b> | V1.4.6 Supreme Security and Terms | Copyright &copy; 2026 Blok D GF3 . All Rights Reserved.
+    Built and developed by <b style="color:var(--accent);">Fajar Shanum D3/7</b> | V1.5.7 Supreme Security and Terms | Copyright &copy; 2026 Blok D GF3 . All Rights Reserved.
 </div>
 
 <div id="checklistModal">
@@ -1308,7 +1306,7 @@ document.getElementById('adminBtn').onclick = async function() {
  if(!isAdmin){
   let u=prompt('QS. Al-Insyirah: 5-6'), p=prompt('Sesungguhnya bersama kesulitan ada kemudahan');
   if(u && u.toUpperCase()==='\x41\x44\x4D\x49\x4E' && p && p.toUpperCase()==='\x53\x41\x4E\x55\x4D\x49\x4F\x4E'){
-   isAdmin=true; this.textContent='✅ ADMIN LAPTOP ON 🔓'; this.className='primary';
+   isAdmin=true; this.textContent='✅ LOGOUT ADMIN 🔓'; this.className='primary';
    document.getElementById('adminTools').style.display='flex';
    applyAdminLock(); recalc(); alert('✅ SELAMAT DATANG TUAN ADMIN KECE ✅');
 } else { 
@@ -1332,7 +1330,7 @@ document.getElementById('adminBtn').onclick = async function() {
     alert('❌ CIEE SALAH PASSWORD ❌'); 
  }
  } else {
-  isAdmin=false; this.textContent='⛔ ADMIN LAPTOP OFF 🔒'; this.className='off';
+  isAdmin=false; this.textContent='⛔ LOGIN ADMIN 🔒'; this.className='off';
   document.getElementById('adminTools').style.display='none';
   applyAdminLock();
  }
@@ -1481,6 +1479,10 @@ window.onbeforeunload = function() {
 
 // 1. TOMBOL ADMIN HP (ON & OFF)
 async function koneksiAdmin() {
+    if (!isAdmin) {
+    alert("🛑 AKTIFKAN ADMIN DULU");
+    return;
+    }
     const btn = document.getElementById("btnKoneksi");
 
     // JIKA SUDAH ADMIN → OFF
@@ -1488,11 +1490,11 @@ async function koneksiAdmin() {
         localStorage.removeItem("admin_verified");
         localStorage.setItem("admin_hp_manual_off", "true");
 
-        btn.innerHTML = "⛔ ADMIN HP OFF 🔒";
+        btn.innerHTML = "⛔ ANDA BELUM TERKONEKSI KE DATABASE 🔒";
         btn.style.backgroundColor = "#e74c3c";
         btn.disabled = false;
 
-        alert("🔒 ADMIN HP DIMATIKAN");
+        alert("🔒 ANDA SUDAH KELUAR DARI KONEKSI KE DATABASE");
         return;
     }
 
@@ -1501,10 +1503,10 @@ async function koneksiAdmin() {
 
     const provider = new firebase.auth.GoogleAuthProvider();
     try {
-        alert("JARVIS: VERIFIKASI GOOGLE (POPUP)...");
+        alert("KLIK OKE UNTUK MELANJUTKAN KONEKSI KE DATABASE");
         await firebase.auth().signInWithPopup(provider);
     } catch (error) {
-        alert("🛑 LOGIN DIBATALKAN");
+        alert("🛑 KONEKSI KE DATABASE DIBATALKAN");
     }
 }
 
@@ -1518,7 +1520,7 @@ function radarStatusAdmin() {
     if (user && user.email === "fajarilmanosaviar@gmail.com") {
         localStorage.setItem("admin_verified", "true");
 
-        btn.innerHTML = "✅ ADMIN HP ON 🔓";
+        btn.innerHTML = "✅ ANDA SUDAH TERKONEKSI KE DATABASE 🔓";
         btn.style.backgroundColor = "#27ae60";
         btn.disabled = false; // WAJIB BISA DIKLIK LAGI
     }
@@ -1550,6 +1552,7 @@ setInterval(radarStatusAdmin, 1500);
 </div>
 </body>
 </html>
+
 
 
 
