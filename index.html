@@ -1512,7 +1512,6 @@ function radarStatusAdmin() {
 firebase.auth().getRedirectResult().then((result) => {
     if (result && result.user) {
         if (result.user.email === "fajarilmanosaviar@gmail.com") {
-            localStorage.setItem("admin_verified", "true");
             alert("✅ STATUS ADMIN AKTIF!");
         }
     }
@@ -1544,6 +1543,7 @@ firebase.auth().onAuthStateChanged(radarStatusAdmin);
 </div>
 </body>
 </html>
+
 
 
 
